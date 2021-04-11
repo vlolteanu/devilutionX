@@ -1452,7 +1452,7 @@ void StoreSellItem()
 
 	idx = stextvhold + ((stextlhold - stextup) >> 2);
 	if (storehidx[idx] >= 0)
-		RemoveInvItem(myplr, storehidx[idx]);
+		RemoveInvItem(&plr[myplr], storehidx[idx]);
 	else
 		RemoveSpdBarItem(myplr, -(storehidx[idx] + 1));
 	cost = storehold[idx]._iIvalue;
@@ -2015,7 +2015,7 @@ void S_TalkEnter()
 	}
 
 	if (stextsel == sn - 2) {
-		SetRndSeed(towner[talker]._tSeed);
+		SetRndSeed(towners[talker]._tSeed);
 		tq = gossipstart + random_(0, gossipend - gossipstart + 1);
 		InitQTextMsg(tq);
 		return;
@@ -2665,7 +2665,7 @@ void TakePlrsMoney(int cost)
 					cost = 0;
 				} else {
 					cost -= plr[myplr].InvList[i]._ivalue;
-					RemoveInvItem(myplr, i);
+					RemoveInvItem(&plr[myplr], i);
 					i = -1;
 				}
 			}
@@ -2679,7 +2679,7 @@ void TakePlrsMoney(int cost)
 						cost = 0;
 					} else {
 						cost -= plr[myplr].InvList[i]._ivalue;
-						RemoveInvItem(myplr, i);
+						RemoveInvItem(&plr[myplr], i);
 						i = -1;
 					}
 				}

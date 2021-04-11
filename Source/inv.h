@@ -91,7 +91,7 @@ bool AutoPlaceItemInBelt(int playerNumber, const ItemStruct &item, bool persistI
 bool GoldAutoPlace(int pnum);
 void CheckInvSwap(int pnum, BYTE bLoc, int idx, WORD wCI, int seed, bool bId, uint32_t dwBuff);
 void inv_update_rem_item(int pnum, BYTE iv);
-void RemoveInvItem(int pnum, int iv);
+void RemoveInvItem(PlayerStruct *player, int iv);
 void RemoveSpdBarItem(int pnum, int iv);
 void CheckInvItem(bool isShiftHeld = false);
 void CheckInvScrn(bool isShiftHeld);

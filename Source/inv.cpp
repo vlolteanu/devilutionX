@@ -644,7 +644,7 @@ bool AutoPlaceItemInBelt(int playerNumber, const ItemStruct &item, bool persistI
 		if (plr[playerNumber].SpdList[i].isEmpty()) {
 			if (persistItem) {
 				plr[playerNumber].SpdList[i] = item;
-				CalcPlrScrolls(playerNumber);
+				CalcPlrScrolls(&plr[playerNumber]);
 				drawsbarflag = true;
 			}
 
@@ -988,7 +988,7 @@ bool AutoPlaceItemInInventorySlot(int playerNumber, int slotIndex, const ItemStr
 			}
 			yy += 10;
 		}
-		CalcPlrScrolls(playerNumber);
+		CalcPlrScrolls(&plr[playerNumber]);
 	}
 	return done;
 }
@@ -1803,42 +1803,40 @@ void inv_update_rem_item(int pnum, BYTE iv)
 	}
 }
 
-void RemoveInvItem(int pnum, int iv)
+void RemoveInvItem(PlayerStruct *player, int iv)
 {
-	int i, j;
-
 	iv++;
 
-	for (i = 0; i < NUM_INV_GRID_ELEM; i++) {
-		if (plr[pnum].InvGrid[i] == iv || plr[pnum].InvGrid[i] == -iv) {
-			plr[pnum].InvGrid[i] = 0;
+	for (int i = 0; i < NUM_INV_GRID_ELEM; i++) {
+		if (player->InvGrid[i] == iv || player->InvGrid[i] == -iv) {
+			player->InvGrid[i] = 0;
 		}
 	}
 
 	iv--;
-	plr[pnum]._pNumInv--;
+	player->_pNumInv--;
 
-	if (plr[pnum]._pNumInv > 0 && plr[pnum]._pNumInv != iv) {
-		plr[pnum].InvList[iv] = plr[pnum].InvList[plr[pnum]._pNumInv];
+	if (player->_pNumInv > 0 && player->_pNumInv != iv) {
+		player->InvList[iv] = player->InvList[player->_pNumInv];
 
-		for (j = 0; j < NUM_INV_GRID_ELEM; j++) {
-			if (plr[pnum].InvGrid[j] == plr[pnum]._pNumInv + 1) {
-				plr[pnum].InvGrid[j] = iv + 1;
+		for (int j = 0; j < NUM_INV_GRID_ELEM; j++) {
+			if (player->InvGrid[j] == player->_pNumInv + 1) {
+				player->InvGrid[j] = iv + 1;
 			}
-			if (plr[pnum].InvGrid[j] == -(plr[pnum]._pNumInv + 1)) {
-				plr[pnum].InvGrid[j] = -(iv + 1);
+			if (player->InvGrid[j] == -(player->_pNumInv + 1)) {
+				player->InvGrid[j] = -(iv + 1);
 			}
 		}
 	}
 
-	CalcPlrScrolls(pnum);
+	CalcPlrScrolls(player);
 }
 
 void RemoveSpdBarItem(int pnum, int iv)
 {
 	plr[pnum].SpdList[iv]._itype = ITYPE_NONE;
 
-	CalcPlrScrolls(pnum);
+	CalcPlrScrolls(&plr[pnum]);
 	force_redraw = 255;
 }
 
@@ -2012,15 +2010,14 @@ void CheckQuestItem(int pnum)
 	}
 	if (plr[pnum].HoldItem.IDidx == IDI_NOTE1 || plr[pnum].HoldItem.IDidx == IDI_NOTE2 || plr[pnum].HoldItem.IDidx == IDI_NOTE3) {
 		int mask, idx, item_num;
-		int n1, n2, n3;
 		ItemStruct tmp;
 		mask = 0;
 		idx = plr[pnum].HoldItem.IDidx;
-		if (PlrHasItem(pnum, IDI_NOTE1, &n1) || idx == IDI_NOTE1)
+		if (plr[pnum].GetItemIndex(IDI_NOTE1) != -1 || idx == IDI_NOTE1)
 			mask = 1;
-		if (PlrHasItem(pnum, IDI_NOTE2, &n2) || idx == IDI_NOTE2)
+		if (plr[pnum].GetItemIndex(IDI_NOTE2) != -1 || idx == IDI_NOTE2)
 			mask |= 2;
-		if (PlrHasItem(pnum, IDI_NOTE3, &n3) || idx == IDI_NOTE3)
+		if (plr[pnum].GetItemIndex(IDI_NOTE3) != -1 || idx == IDI_NOTE3)
 			mask |= 4;
 		if (mask == 7) {
 			sfxdelay = 10;
@@ -2039,22 +2036,16 @@ void CheckQuestItem(int pnum)
 			}
 			switch (idx) {
 			case IDI_NOTE1:
-				PlrHasItem(pnum, IDI_NOTE2, &n2);
-				RemoveInvItem(pnum, n2);
-				PlrHasItem(pnum, IDI_NOTE3, &n3);
-				RemoveInvItem(pnum, n3);
+				RemoveInvItem(&plr[pnum], plr[pnum].GetItemIndex(IDI_NOTE2));
+				RemoveInvItem(&plr[pnum], plr[pnum].GetItemIndex(IDI_NOTE3));
 				break;
 			case IDI_NOTE2:
-				PlrHasItem(pnum, IDI_NOTE1, &n1);
-				RemoveInvItem(pnum, n1);
-				PlrHasItem(pnum, IDI_NOTE3, &n3);
-				RemoveInvItem(pnum, n3);
+				RemoveInvItem(&plr[pnum], plr[pnum].GetItemIndex(IDI_NOTE1));
+				RemoveInvItem(&plr[pnum], plr[pnum].GetItemIndex(IDI_NOTE3));
 				break;
 			case IDI_NOTE3:
-				PlrHasItem(pnum, IDI_NOTE1, &n1);
-				RemoveInvItem(pnum, n1);
-				PlrHasItem(pnum, IDI_NOTE2, &n2);
-				RemoveInvItem(pnum, n2);
+				RemoveInvItem(&plr[pnum], plr[pnum].GetItemIndex(IDI_NOTE1));
+				RemoveInvItem(&plr[pnum], plr[pnum].GetItemIndex(IDI_NOTE2));
 				break;
 			}
 			item_num = itemactive[0];
@@ -2586,8 +2577,7 @@ void RemoveScroll(int pnum)
 		if (!plr[pnum].InvList[i].isEmpty()
 		    && (plr[pnum].InvList[i]._iMiscId == IMISC_SCROLL || plr[pnum].InvList[i]._iMiscId == IMISC_SCROLLT)
 		    && plr[pnum].InvList[i]._iSpell == plr[pnum]._pRSpell) {
-			RemoveInvItem(pnum, i);
-			CalcPlrScrolls(pnum);
+			RemoveInvItem(&plr[pnum], i);
 			return;
 		}
 	}
@@ -2596,7 +2586,7 @@ void RemoveScroll(int pnum)
 		    && (plr[pnum].SpdList[i]._iMiscId == IMISC_SCROLL || plr[pnum].SpdList[i]._iMiscId == IMISC_SCROLLT)
 		    && plr[pnum].SpdList[i]._iSpell == plr[pnum]._pSpell) {
 			RemoveSpdBarItem(pnum, i);
-			CalcPlrScrolls(pnum);
+			CalcPlrScrolls(&plr[pnum]);
 			return;
 		}
 	}
@@ -2798,7 +2788,7 @@ bool UseInvItem(int pnum, int cii)
 			invflag = false;
 			return true;
 		}
-		RemoveInvItem(pnum, c);
+		RemoveInvItem(&plr[pnum], c);
 	}
 	return true;
 }

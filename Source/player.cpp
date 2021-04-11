@@ -179,6 +179,16 @@ const char *const ClassPathTbl[] = {
 	"Warrior",
 };
 
+int PlayerStruct::GetItemIndex(int idx) const
+{
+	for (int i = 0; i < this->_pNumInv; i++) {
+		if (this->InvList[i].IDidx == idx)
+			return i;
+	}
+
+	return -1;
+}
+
 Sint32 PlayerStruct::GetBaseAttributeValue(attribute_id attribute) const
 {
 	switch (attribute) {
@@ -1882,7 +1892,7 @@ void DropHalfPlayersGold(int pnum)
 					hGold = 0;
 				} else {
 					hGold -= plr[pnum].InvList[i]._ivalue;
-					RemoveInvItem(pnum, i);
+					RemoveInvItem(&plr[pnum], i);
 					SetPlrHandItem(&plr[pnum].HoldItem, IDI_GOLD);
 					GetGoldSeed(pnum, &plr[pnum].HoldItem);
 					SetPlrHandGoldCurs(&plr[pnum].HoldItem);
@@ -1907,7 +1917,7 @@ void DropHalfPlayersGold(int pnum)
 					hGold = 0;
 				} else {
 					hGold -= plr[pnum].InvList[i]._ivalue;
-					RemoveInvItem(pnum, i);
+					RemoveInvItem(&plr[pnum], i);
 					SetPlrHandItem(&plr[pnum].HoldItem, IDI_GOLD);
 					GetGoldSeed(pnum, &plr[pnum].HoldItem);
 					SetPlrHandGoldCurs(&plr[pnum].HoldItem);

@@ -2897,8 +2897,7 @@ bool M_CallWalk(int i, int md)
 bool M_PathWalk(int i)
 {
 	Sint8 path[MAX_PATH_LENGTH];
-	bool(*Check)
-	(int, int, int);
+	bool (*Check)(int, int, int);
 
 	/** Maps from walking path step to facing direction. */
 	const Sint8 plr2monst[9] = { 0, 5, 3, 7, 1, 4, 6, 0, 2 };
@@ -5603,15 +5602,17 @@ void TalktoMonster(int i)
 	pnum = Monst->_menemy;
 	Monst->_mmode = MM_TALK;
 	if (Monst->_mAi == AI_SNOTSPIL || Monst->_mAi == AI_LACHDAN) {
-		if (QuestStatus(Q_LTBANNER) && quests[Q_LTBANNER]._qvar1 == 2 && PlrHasItem(pnum, IDI_BANNER, &itm)) {
-			RemoveInvItem(pnum, itm);
+		itm = plr[pnum].GetItemIndex(IDI_BANNER);
+		if (QuestStatus(Q_LTBANNER) && quests[Q_LTBANNER]._qvar1 == 2 && itm != -1) {
+			RemoveInvItem(&plr[pnum], itm);
 			quests[Q_LTBANNER]._qactive = QUEST_DONE;
 			Monst->mtalkmsg = TEXT_BANNER12;
 			Monst->_mgoal = MGOAL_INQUIRING;
 		}
 		if (QuestStatus(Q_VEIL) && Monst->mtalkmsg >= TEXT_VEIL9) {
-			if (PlrHasItem(pnum, IDI_GLDNELIX, &itm)) {
-				RemoveInvItem(pnum, itm);
+			itm = plr[pnum].GetItemIndex(IDI_GLDNELIX);
+			if (itm != -1) {
+				RemoveInvItem(&plr[pnum], itm);
 				Monst->mtalkmsg = TEXT_VEIL11;
 				Monst->_mgoal = MGOAL_INQUIRING;
 			}

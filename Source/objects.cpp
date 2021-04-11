@@ -3318,15 +3318,13 @@ void OperateL3Door(int pnum, int i, bool sendflag)
 
 void OperatePedistal(int pnum, int i)
 {
-	BYTE *mem;
-	int iv;
-
 	if (numitems >= MAXITEMS) {
 		return;
 	}
 
-	if (object[i]._oVar6 != 3 && PlrHasItem(pnum, IDI_BLDSTONE, &iv) != NULL) {
-		RemoveInvItem(pnum, iv);
+	int iv = plr[pnum].GetItemIndex(IDI_BLDSTONE);
+	if (object[i]._oVar6 != 3 && iv != -1) {
+		RemoveInvItem(&plr[pnum], iv);
 		object[i]._oAnimFrame++;
 		object[i]._oVar6++;
 		if (object[i]._oVar6 == 1) {
@@ -3345,7 +3343,7 @@ void OperatePedistal(int pnum, int i)
 			if (!deltaload)
 				PlaySfxLoc(LS_BLODSTAR, object[i]._ox, object[i]._oy);
 			ObjChangeMap(object[i]._oVar1, object[i]._oVar2, object[i]._oVar3, object[i]._oVar4);
-			mem = LoadFileInMem("Levels\\L2Data\\Blood2.DUN", NULL);
+			BYTE *mem = LoadFileInMem("Levels\\L2Data\\Blood2.DUN", NULL);
 			LoadMapObjs(mem, 2 * setpc_x, 2 * setpc_y);
 			mem_free_dbg(mem);
 			SpawnUnique(UITEM_ARMOFVAL, 2 * setpc_x + 25, 2 * setpc_y + 19);

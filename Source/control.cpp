@@ -1320,7 +1320,7 @@ void DrawInfoBox(CelOutputBuffer out)
 					PrintMonstHistory(monster[pcursmonst].MType->mtype);
 				}
 			} else if (pcursitem == -1) {
-				strcpy(infostr, towner[pcursmonst]._tName);
+				strcpy(infostr, towners[pcursmonst]._tName);
 			}
 		}
 		if (pcursplr != -1) {
@@ -2028,7 +2028,7 @@ void control_remove_gold(int pnum, int gold_index)
 		if (plr[pnum].InvList[gi]._ivalue > 0)
 			SetGoldCurs(pnum, gi);
 		else
-			RemoveInvItem(pnum, gi);
+			RemoveInvItem(&plr[pnum], gi);
 	} else {
 		gi = gold_index - INVITEM_BELT_FIRST;
 		plr[pnum].SpdList[gi]._ivalue -= dropGoldValue;

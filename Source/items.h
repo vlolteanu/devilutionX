@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "itemdat.h"
+#include "player.h"
 
 namespace devilution {
 
@@ -366,7 +367,7 @@ bool IsUniqueAvailable(int i);
 void InitItemGFX();
 void InitItems();
 void CalcPlrItemVals(int p, bool Loadgfx);
-void CalcPlrScrolls(int p);
+void CalcPlrScrolls(struct PlayerStruct *player);
 void CalcPlrStaff(int p);
 void CalcPlrInv(int p, bool Loadgfx);
 void SetPlrHandItem(ItemStruct *h, int idata);

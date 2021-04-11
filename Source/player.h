@@ -306,17 +306,24 @@ struct PlayerStruct {
 	Uint8 *_pBData;
 
 	/**
+	 * @brief Search the players inventory for a given item.
+	 * @param The item idx identifyer
+	 * @return The inventory index of the item, or -1 if not found.
+	 */
+	int GetItemIndex(int idx) const;
+
+	/**
 	 * @brief Gets the base value of the player's specified attribute.
 	 * @param attribute The attribute to retrieve the base value for
 	 * @return The base value for the requested attribute.
-	*/
+	 */
 	Sint32 GetBaseAttributeValue(attribute_id attribute) const;
 
 	/**
 	 * @brief Gets the maximum value of the player's specified attribute.
 	 * @param attribute The attribute to retrieve the maximum value for
 	 * @return The maximum value for the requested attribute.
-	*/
+	 */
 	Sint32 GetMaximumAttributeValue(attribute_id attribute) const;
 };
 
