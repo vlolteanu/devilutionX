@@ -780,7 +780,7 @@ void TalkToTavern(PlayerStruct *player, TownerStruct *towner)
 	}
 }
 
-void TalkToDeadguy(PlayerStruct *player, TownerStruct *towner)
+void TalkToDeadguy(coonst PlayerStruct &player, TownerStruct *towner)
 {
 	if (quests[Q_BUTCHER]._qactive == QUEST_ACTIVE && quests[Q_BUTCHER]._qvar1 == 1) {
 		towner->_tbtcnt = true;
