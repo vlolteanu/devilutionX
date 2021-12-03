@@ -1443,7 +1443,7 @@ bool SpellHasActorTarget()
 	return pcursplr != -1 || pcursmonst != -1;
 }
 
-void UpdateSpellTarget()
+void UpdateSpellTarget(spell_id spellID)
 {
 	if (SpellHasActorTarget())
 		return;
@@ -1453,7 +1453,7 @@ void UpdateSpellTarget()
 
 	auto &myPlayer = Players[MyPlayerId];
 
-	int range = myPlayer._pRSpell == SPL_TELEPORT ? 4 : 1;
+	int range = spellID == SPL_TELEPORT ? 4 : 1;
 
 	cursPosition = myPlayer.position.future + Displacement(myPlayer._pdir) * range;
 }
@@ -1496,7 +1496,7 @@ bool TryDropItem()
 	return pcurs == CURSOR_HAND;
 }
 
-void PerformSpellAction()
+void PerformSpellAction(spell_id spellID, spell_type spellType)
 {
 	if (InGameMenu() || QuestLogIsOpen || sbookflag)
 		return;
@@ -1526,16 +1526,20 @@ void PerformSpellAction()
 		return;
 	}
 
-	const auto &myPlayer = Players[MyPlayerId];
-	int spl = myPlayer._pRSpell;
-	if ((pcursplr == -1 && (spl == SPL_RESURRECT || spl == SPL_HEALOTHER))
-	    || (pcursobj == -1 && spl == SPL_DISARM)) {
-		myPlayer.Say(HeroSpeech::ICantCastThatHere);
+	if ((pcursplr == -1 && (spellID == SPL_RESURRECT || spellID == SPL_HEALOTHER))
+	    || (pcursobj == -1 && spellID == SPL_DISARM)) {
+		Players[MyPlayerId].Say(HeroSpeech::ICantCastThatHere);
 		return;
 	}
 
-	UpdateSpellTarget();
-	CheckPlrSpell(false);
+	UpdateSpellTarget(spellID);
+	CheckPlrSpell(false, spellID, spellType);
+}
+
+void QuickCast(int slot)
+{
+	Player &myPlayer = Players[MyPlayerId];
+	PerformSpellAction(myPlayer._pSplHotKey[slot], myPlayer._pSplTHotKey[slot]);
 }
 
 void CtrlUseInvItem()

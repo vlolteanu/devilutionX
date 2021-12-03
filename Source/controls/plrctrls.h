@@ -2,6 +2,8 @@
 // Controller actions implementation
 
 #include <cstdint>
+#include "player.h"
+#include "spelldat.h"
 
 namespace devilution {
 
@@ -44,7 +46,8 @@ void PerformSecondaryAction();
 bool TryDropItem();
 void InvalidateInventorySlot();
 void FocusOnInventory();
-void PerformSpellAction();
+void PerformSpellAction(spell_id spellID = Players[MyPlayerId]._pRSpell, spell_type spellType = Players[MyPlayerId]._pRSplType);
+void QuickCast(int slot);
 
 extern int speedspellcount;
 
