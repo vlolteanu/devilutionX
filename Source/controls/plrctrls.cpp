@@ -1539,6 +1539,10 @@ void PerformSpellAction(spell_id spellID, spell_type spellType)
 void QuickCast(int slot)
 {
 	Player &myPlayer = Players[MyPlayerId];
+
+	if (!SpellAvailable(myPlayer._pSplHotKey[slot], myPlayer._pSplTHotKey[slot]))
+		return;
+
 	PerformSpellAction(myPlayer._pSplHotKey[slot], myPlayer._pSplTHotKey[slot]);
 }
 

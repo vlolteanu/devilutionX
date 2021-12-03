@@ -647,6 +647,7 @@ void SetPlrDex(Player &player, int v);
 void SetPlrVit(Player &player, int v);
 void InitDungMsgs(Player &player);
 void PlayDungMsgs();
+bool SpellAvailable(spell_id spellID, spell_type spellType);
 
 /* data */
 

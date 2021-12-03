@@ -3844,6 +3844,35 @@ void PlayDungMsgs()
 	}
 }
 
+bool SpellAvailable(spell_id spellID, spell_type spellType)
+{
+	uint64_t spells;
+
+	auto &myPlayer = Players[MyPlayerId];
+
+	if (spellID == SPL_INVALID)
+		return false;
+
+	switch (spellType) {
+	case RSPLTYPE_SKILL:
+		spells = myPlayer._pAblSpells;
+		break;
+	case RSPLTYPE_SPELL:
+		spells = myPlayer._pMemSpells;
+		break;
+	case RSPLTYPE_SCROLL:
+		spells = myPlayer._pScrlSpells;
+		break;
+	case RSPLTYPE_CHARGES:
+		spells = myPlayer._pISpells;
+		break;
+	case RSPLTYPE_INVALID:
+		return false;
+	}
+
+	return spells & GetSpellBitmask(spellID);
+}
+
 #ifdef RUN_TESTS
 bool TestPlayerDoGotHit(int pnum)
 {

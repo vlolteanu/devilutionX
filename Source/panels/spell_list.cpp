@@ -301,36 +301,14 @@ void SetSpeedSpell(int slot)
 
 void ToggleSpell(int slot)
 {
-	uint64_t spells;
-
 	auto &myPlayer = Players[MyPlayerId];
 
-	if (myPlayer._pSplHotKey[slot] == SPL_INVALID) {
+	if (!SpellAvailable(myPlayer._pSplHotKey[slot], myPlayer._pSplTHotKey[slot]))
 		return;
-	}
 
-	switch (myPlayer._pSplTHotKey[slot]) {
-	case RSPLTYPE_SKILL:
-		spells = myPlayer._pAblSpells;
-		break;
-	case RSPLTYPE_SPELL:
-		spells = myPlayer._pMemSpells;
-		break;
-	case RSPLTYPE_SCROLL:
-		spells = myPlayer._pScrlSpells;
-		break;
-	case RSPLTYPE_CHARGES:
-		spells = myPlayer._pISpells;
-		break;
-	case RSPLTYPE_INVALID:
-		return;
-	}
-
-	if ((spells & GetSpellBitmask(myPlayer._pSplHotKey[slot])) != 0) {
-		myPlayer._pRSpell = myPlayer._pSplHotKey[slot];
-		myPlayer._pRSplType = myPlayer._pSplTHotKey[slot];
-		force_redraw = 255;
-	}
+	myPlayer._pRSpell = myPlayer._pSplHotKey[slot];
+	myPlayer._pRSplType = myPlayer._pSplTHotKey[slot];
+	force_redraw = 255;
 }
 
 void DoSpeedBook()
